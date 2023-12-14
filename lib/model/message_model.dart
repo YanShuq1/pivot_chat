@@ -12,6 +12,12 @@ class MessageModel extends BaseItemModel<String> {
 
   const MessageModel(this._message);
 
+  // FIXME: 由于Message里没有Conversation字段，主动扩展。
+  // 为保证能和conversation对应上，见conversation_model.dart
+  String get conversationID {
+    return _message.sessionType == ConversationType.single ? _message.sendID! : _message.groupID!;
+  }
+
   String? get textContent {
     if (_message.contentType == MessageType.text) {
       assert(_message.textElem != null);
@@ -157,6 +163,9 @@ class MessageModel extends BaseItemModel<String> {
         return "[引用消息]";
       case MessageType.customFace:
         return "[表情消息]";
+      case MessageType.friendApplicationApprovedNotification:
+        return "[好友申请通过]";
+      // TODO: 消息类型
       default:
         return "暂不支持的消息类型";
     }
